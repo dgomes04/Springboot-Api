@@ -15,15 +15,17 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/products")
 public class ProductController {
     @Autowired
     IProductService productService;
 
-    @PostMapping("/products")
+    @PostMapping("/")
     public ResponseEntity<BaseResponse<Product>> saveProduct(@RequestBody @Valid AddProductDTO productRecordDto){
         try{
             var response = new BaseResponse<Product>();
             response.setResult(productService.add(productRecordDto));
+
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         }catch(Exception e){
             var response = new BaseResponse<Product>();
@@ -33,11 +35,12 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
-    @GetMapping("/products")
+    @GetMapping("/")
     public ResponseEntity<BaseResponse<List<Product>>> findAll(){
         try {
             var response = new BaseResponse<List<Product>>();
             response.setResult(productService.getAll());
+
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch (Exception e){
             var response = new BaseResponse<List<Product>>();
@@ -47,50 +50,78 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
-    @GetMapping("/products/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<BaseResponse<Product>> getOne(@PathVariable(value = "id") UUID id){
         try {
             var response = new BaseResponse<Product>();
             var result = productService.getOne(id);
-
             response.setResult(result);
+
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch(ModelNotFoundException e){
             var response = new BaseResponse<Product>();
             response.setError(true);
             response.setErrorMessage(e.getMessage());
+
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         catch (Exception e){
             var response = new BaseResponse<Product>();
             response.setError(true);
             response.setErrorMessage(e.getMessage());
+
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
-    @PutMapping("/products/{id}")
-    public ResponseEntity<BaseResponse<Product>> updateProduct (@PathVariable(value="id")   UUID id,
+    @PatchMapping("/{id}")
+    public ResponseEntity<BaseResponse<Product>> partialUpdateProduct (@PathVariable(value="id")   UUID id,
                                                                 @RequestBody @Valid UpdateProductDTO model){
         try {
             var response = new BaseResponse<Product>();
-            var result = productService.update(id, model);
-
+            var result = productService.partialUpdate(id, model);
             response.setResult(result);
+
             return ResponseEntity.status(HttpStatus.OK).body(response);
         }catch(ModelNotFoundException e){
             var response = new BaseResponse<Product>();
             response.setError(true);
             response.setErrorMessage(e.getMessage());
+
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
         catch (Exception e){
             var response = new BaseResponse<Product>();
             response.setError(true);
             response.setErrorMessage(e.getMessage());
+
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
-    @DeleteMapping("products/{id}")
+    @PutMapping("/{id}")
+    public ResponseEntity<BaseResponse<Product>> completeUpdateProduct (@PathVariable(value="id")   UUID id,
+                                                                @RequestBody @Valid AddProductDTO model){
+        try {
+            var response = new BaseResponse<Product>();
+            var result = productService.completeUpdate(id, model);
+            response.setResult(result);
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch(ModelNotFoundException e){
+            var response = new BaseResponse<Product>();
+            response.setError(true);
+            response.setErrorMessage(e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        }
+        catch (Exception e){
+            var response = new BaseResponse<Product>();
+            response.setError(true);
+            response.setErrorMessage(e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+    @DeleteMapping("/{id}")
     public ResponseEntity<BaseResponse<String>> delete(@PathVariable(value = "id")UUID id){
         try {
             var response = new BaseResponse<String>();

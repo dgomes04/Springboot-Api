@@ -12,9 +12,10 @@ import java.util.UUID;
 
 @Service
 public interface IProductService {
-    public Product add(AddProductDTO model);
-    public List<Product> getAll();
-    public Product getOne(UUID id) throws ModelNotFoundException;
-    public Product update(UUID id, UpdateProductDTO model) throws ModelNotFoundException;
-    public String delete(UUID id) throws ModelNotFoundException;
+    Product add(AddProductDTO model);
+    List<Product> getAll();
+    Product getOne(UUID id) throws ModelNotFoundException;
+    Product partialUpdate(UUID id, UpdateProductDTO model) throws ModelNotFoundException;
+    Product completeUpdate(UUID id, AddProductDTO model) throws ModelNotFoundException;
+    String delete(UUID id) throws ModelNotFoundException;
 }

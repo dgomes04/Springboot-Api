@@ -7,11 +7,8 @@ import com.example.springboot.exceptions.ModelNotFoundException;
 import com.example.springboot.repositories.IProductRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -38,7 +35,7 @@ public class ProductService implements IProductService{
         throw new ModelNotFoundException(String.format("Produto não encontrado: Id: %s", id));
     }
     @Override
-    public Product update(UUID id, UpdateProductDTO model) throws ModelNotFoundException {
+    public Product partialUpdate(UUID id, UpdateProductDTO model) throws ModelNotFoundException {
         var product = this.getOne(id);
         product.setUpdatedAt(LocalDateTime.now());
         if(model.name() != null)
@@ -47,6 +44,13 @@ public class ProductService implements IProductService{
             product.setValue(model.value());
         return productRepository.save(product);
     }
+    @Override
+    public Product completeUpdate(UUID id, AddProductDTO model) throws ModelNotFoundException {
+        var product = this.getOne(id);
+        product.setUpdatedAt(LocalDateTime.now());
+        return productRepository.save(product);
+    }
+
 
     @Override
     public String delete(UUID id) throws ModelNotFoundException {
